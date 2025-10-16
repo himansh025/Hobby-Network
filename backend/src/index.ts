@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import { userRoutes } from './routes/userRoutes';
 import { graphRoutes } from './routes/graph';
+import connectDB from './config/db';
 
 dotenv.config();
 
@@ -13,17 +14,8 @@ const PORT = process.env.PORT || 3000;
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/cybernauts';
 
 // Database connection
-const connectDatabase = async () => {
-  try {
-    await mongoose.connect(MONGODB_URI);
-    console.log('✅MongoDB connected successfully');
-  } catch (error) {
-    console.error('MongoDB connection error:', error);
-    process.exit(1);
-  }
-};
 
-connectDatabase();
+connectDB();
 
 // Middleware
 app.use(helmet());
