@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import { axiosInstance } from "../../config/axiosConfig";
 import type { User } from "../../types/user";
 import UserItem from "./UserItem";
+import LoadingSpinner from "../UI/LoadingSpinner";
 
 interface UserListProps {
   onEditUser: (user: User) => void;
@@ -13,14 +14,14 @@ interface UserListProps {
 const UserList: React.FC<UserListProps> = ({ onEditUser }) => {
   const [loading, setLoading] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState<string | null>(null);
-  const users: User[] = useSelector((state: any) => state.users.users);
-
+ const users: User[] = useSelector((state: any) => state.users?.users || []);
   const handleEdit = (user: User) => {
     onEditUser(user);
   };
 
   const handleDelete = async (userId: string) => {
     try {
+      setLoading(true)
       setDeleteLoading(userId);
       await axiosInstance.delete(`/users/${userId}`);
       toast.success("User deleted successfully!");
@@ -28,17 +29,13 @@ const UserList: React.FC<UserListProps> = ({ onEditUser }) => {
       const errorMsg = error.response?.data?.error || "Failed to delete user";
       toast.error(errorMsg);
     } finally {
+      setLoading(false)
       setDeleteLoading(null);
     }
   };
 
   if (loading) {
-    return (
-      <div className="p-4 text-center text-gray-500">
-        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500 mx-auto"></div>
-        <p className="mt-2">Loading users...</p>
-      </div>
-    );
+    return <LoadingSpinner/>
   }
 
   if (users.length === 0) {

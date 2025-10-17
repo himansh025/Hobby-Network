@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import ReactFlow, {
   useNodesState,
   useEdgesState,
@@ -7,15 +7,15 @@ import ReactFlow, {
   useReactFlow,
   Connection,
   Edge,
-} from 'reactflow';
-import 'reactflow/dist/style.css';
-import { useDispatch, useSelector } from 'react-redux';
-import { setConnectionSource } from '../../store/slices/uiSlice';
-import { setGraphData } from '../../store/slices/graphSlice';
-import CustomNode from './CustomNode';
-import axiosInstance from '../../config/axiosConfig';
-import toast from 'react-hot-toast';
-import LoadingSpinner from '../UI/LoadingSpinner';
+} from "reactflow";
+import "reactflow/dist/style.css";
+import { useDispatch, useSelector } from "react-redux";
+import { setConnectionSource } from "../../store/slices/uiSlice";
+import { setGraphData } from "../../store/slices/graphSlice";
+import CustomNode from "./CustomNode";
+import axiosInstance from "../../config/axiosConfig";
+import toast from "react-hot-toast";
+import LoadingSpinner from "../UI/LoadingSpinner";
 
 const nodeTypes = { custom: CustomNode };
 
@@ -25,13 +25,14 @@ const GraphVisualization: React.FC = () => {
   const { data } = useSelector((state: any) => state.graph);
   const { connectionSource } = useSelector((state: any) => state.ui);
   const { fitView } = useReactFlow();
-  const [laoding,setLoading]=useState(false);
+  const [laoding, setLoading] = useState(false);
+
   // Memoize node formatting
   const formattedNodes = useMemo(() => {
     if (!data?.nodes?.length) return [];
     return data.nodes.map((n: any) => ({
       id: n.id,
-      type: 'custom',
+      type: "custom",
       position: n.position,
       data: n.data,
     }));
@@ -43,72 +44,80 @@ const GraphVisualization: React.FC = () => {
       id: e.id,
       source: e.source,
       target: e.target,
-      type: 'smoothstep',
-      style: { stroke: '#6b7280', strokeWidth: 2 },
+      type: "smoothstep",
+      style: { stroke: "#6b7280", strokeWidth: 2 },
     }));
   }, [data?.edges]);
 
-    const [nodes, setNodes, onNodesChange] = useNodesState(formattedNodes);
+  const [nodes, setNodes, onNodesChange] = useNodesState(formattedNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(formattedEdges);
 
-
- useEffect(() => {
+  useEffect(() => {
     setNodes(formattedNodes);
     setEdges(formattedEdges);
     setTimeout(() => fitView(), 100);
   }, [formattedNodes, formattedEdges, setNodes, setEdges, fitView]);
 
-  // API call to create a relationship
-   const createRelationship = useCallback(async (id: string, target: string) => {
-    setLoading(true);
-    try {
-      await axiosInstance.post(`/users/${id}/link`, { targetUserId: target });
-      const graphResponse = await axiosInstance.get('/graph');
-      dispatch(setGraphData(graphResponse.data.data));
-    } catch (err: any) {
-      const errorMsg = err.response?.data?.error || 'Failed to create relationship';
-      toast.error(errorMsg);
-    } finally {
-      setLoading(false);
-    }
-  }, [dispatch]);
-  // API call to remove a relationship
-  const removeRelationship = useCallback(async (id: string, targetUserId: string) => {
-        setLoading(true)
-// console.log(id);
-    try {
-      const response = await axiosInstance.delete(`/users/${id}/unlink`,  {
-  data: { targetUserId }});
-      toast.success(response.data.message);
-      toast.success(response.data.message)
-      // Refresh graph data
-      const graphResponse = await axiosInstance.get('/graph');
-      dispatch(setGraphData(graphResponse.data.data));
-    } catch (err: any) {
-      const errorMsg = err.response?.data?.error || 'Failed to remove relationship';
-      toast.error(errorMsg);
-    }finally{
-          setLoading(false)
+  const createRelationship = useCallback(
+    async (id: string, target: string) => {
+      setLoading(true);
+      try {
+        await axiosInstance.post(`/users/${id}/link`, { targetUserId: target });
+        const graphResponse = await axiosInstance.get("/graph");
+        dispatch(setGraphData(graphResponse.data.data));
+      } catch (err: any) {
+        const errorMsg =
+          err.response?.data?.error || "Failed to create relationship";
+        toast.error(errorMsg);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [dispatch]
+  );
 
-    }
-  },[dispatch]);
+  const removeRelationship = useCallback(
+    async (id: string, targetUserId: string) => {
+      setLoading(true);
+      // console.log(id);
+      try {
+        const response = await axiosInstance.delete(`/users/${id}/unlink`, {
+          data: { targetUserId },
+        });
+        toast.success(response.data.message);
+        toast.success(response.data.message);
+        // Refresh graph data
+        const graphResponse = await axiosInstance.get("/graph");
+        dispatch(setGraphData(graphResponse.data.data));
+      } catch (err: any) {
+        const errorMsg =
+          err.response?.data?.error || "Failed to remove relationship";
+        toast.error(errorMsg);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [dispatch]
+  );
 
   const onEdgeDoubleClick = async (event: React.MouseEvent, edge: Edge) => {
     event.preventDefault();
     event.stopPropagation();
-    
-    if (window.confirm('Are you sure you want to remove this relationship?')) {
+
+    if (window.confirm("Are you sure you want to remove this relationship?")) {
       await removeRelationship(edge.source, edge.target);
     }
   };
 
-  const onNodeClick = useCallback(async (event: React.MouseEvent, node: any) => {
-    if (connectionSource && connectionSource !== node.id) {
-      await createRelationship(connectionSource, node.id);
-      dispatch(setConnectionSource(null));
-    }
-  }, [connectionSource, createRelationship, dispatch]);
-
+  const onNodeClick = useCallback(
+    async (event: React.MouseEvent, node: any) => {
+      if (connectionSource && connectionSource !== node.id) {
+        await createRelationship(connectionSource, node.id);
+        dispatch(setConnectionSource(null));
+      }
+    },
+    [connectionSource, createRelationship, dispatch]
+  );
 
   const onNodeDoubleClick = async (event: React.MouseEvent, node: any) => {
     dispatch(setConnectionSource(node.id));
@@ -120,9 +129,8 @@ const GraphVisualization: React.FC = () => {
     }
   };
 
-
-  if(laoding){
-    return <LoadingSpinner/>
+  if (laoding) {
+    return <LoadingSpinner />;
   }
 
   return (

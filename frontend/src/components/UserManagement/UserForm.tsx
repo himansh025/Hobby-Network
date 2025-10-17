@@ -13,16 +13,9 @@ interface UserFormProps {
   onCancelEdit: () => void;
 }
 
-const UserForm: React.FC<UserFormProps> = ({
-  selectedUser,
-  onCancelEdit,
-}) => {
-  const [formData, setFormData] = useState<CreateUserRequest>({
-    username: "",
-    age: 25,
-    hobbies: [],
-  });
-  const dispatch=useDispatch();
+const UserForm: React.FC<UserFormProps> = ({ selectedUser, onCancelEdit }) => {
+  const [formData, setFormData] = useState<CreateUserRequest>({username: "",age: 25,hobbies: []});
+  const dispatch = useDispatch();
   const [newHobby, setNewHobby] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
@@ -66,12 +59,11 @@ const UserForm: React.FC<UserFormProps> = ({
       setLoading(true);
       const response = await axiosInstance.post("/users", userData);
       toast.success("User created successfully!");
-      const res= await axiosInstance.get('/users')
-            const graph= await axiosInstance.get('/graph')
+      const res = await axiosInstance.get("/users");
+      const graph = await axiosInstance.get("/graph");
       // console.log(res.data.data);
-      dispatch(setUsers(res.data.data))
-            dispatch(setGraphData(graph.data.data))
-
+      dispatch(setUsers(res.data.data));
+      dispatch(setGraphData(graph.data.data));
       return response.data.data;
     } catch (error: any) {
       const errorMsg = error.response?.data?.error || "Failed to create user";
@@ -88,10 +80,9 @@ const UserForm: React.FC<UserFormProps> = ({
       setLoading(true);
       const response = await axiosInstance.put(`/users/${id}`, userData);
       toast.success("User updated successfully!");
-      const user = await axiosInstance.get('/users');
-      dispatch(setUsers(user.data.data))
+      const user = await axiosInstance.get("/users");
+      dispatch(setUsers(user.data.data));
       return response.data.data;
-
     } catch (error: any) {
       const errorMsg = error.response?.data?.error || "Failed to update user";
       toast.error(errorMsg);
@@ -114,25 +105,20 @@ const UserForm: React.FC<UserFormProps> = ({
       }
       setFormData({ username: "", age: 0, hobbies: [] });
       onCancelEdit(); // Clear selection
-    } catch (error:any) {
-      toast.error(error.message)
+    } catch (error: any) {
+      toast.error(error.message);
     }
   };
 
   const addHobby = () => {
     if (newHobby.trim() && !formData.hobbies.includes(newHobby.trim())) {
       setFormData((prev) => ({
-        ...prev,
-        hobbies: [...prev.hobbies, newHobby.trim()],
-      }));
-      setNewHobby("");
-    }
-  };
+        ...prev,hobbies: [...prev.hobbies, newHobby.trim()]}));
+      setNewHobby("");}};
 
   const removeHobby = (hobbyToRemove: string) => {
     setFormData((prev) => ({
-      ...prev,
-      hobbies: prev.hobbies.filter((hobby) => hobby !== hobbyToRemove),
+      ...prev,hobbies: prev.hobbies.filter((hobby) => hobby !== hobbyToRemove),
     }));
   };
 
@@ -143,15 +129,13 @@ const UserForm: React.FC<UserFormProps> = ({
     }
   };
 
-if(loading){
-  return <LoadingSpinner/>
-}
+  if (loading) {
+    return <LoadingSpinner />;
+  }
   return (
     <form onSubmit={handleSubmit} className="space-y-2">
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Username *
-        </label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Username *</label>
         <input
           type="text"
           value={formData.username}
@@ -236,28 +220,27 @@ if(loading){
         </div>
       </div>
 
-    <div className="flex flex-col md:flex-row gap-2">
-  <button
-    type="submit"
-    disabled={loading}
-    className="btn-primary rounded-md flex-1 p-2 bg-blue-950 w-full md:w-auto disabled:opacity-50 disabled:cursor-not-allowed flex text-white items-center justify-center"
-  >
-    <Save size={20} className="mr-1 text-green-400" />
-    {selectedUser ? "Update User" : "Create User"}
-    {loading && "..."}
-  </button>
+      <div className="flex flex-col md:flex-row gap-2">
+        <button
+          type="submit"
+          disabled={loading}
+          className="btn-primary rounded-md flex-1 p-2 bg-blue-950 w-full md:w-auto disabled:opacity-50 disabled:cursor-not-allowed flex text-white items-center justify-center"
+        >
+          <Save size={20} className="mr-1 text-green-400" />
+          {selectedUser ? "Update User" : "Create User"}
+          {loading && "..."}
+        </button>
 
-  {selectedUser && (
-    <button
-      type="button"
-      onClick={onCancelEdit}
-      className="btn-secondary flex-1 p-2 w-full md:w-auto"
-    >
-      Cancel
-    </button>
-  )}
-</div>
-
+        {selectedUser && (
+          <button
+            type="button"
+            onClick={onCancelEdit}
+            className="btn-secondary flex-1 p-2 w-full md:w-auto"
+          >
+            Cancel
+          </button>
+        )}
+      </div>
     </form>
   );
 };

@@ -15,7 +15,7 @@ const App: React.FC = () => {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
 
-  const fetchInitialData = useCallback(async () => {
+  const fetchInitialData = async () => {
     try {
       setLoading(true);
       const [usersResponse, graphResponse] = await Promise.all([
@@ -31,11 +31,11 @@ const App: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [dispatch]);
+  }
 
   useEffect(() => {
     fetchInitialData();
-  }, [fetchInitialData]);
+  }, []);
 
   if (loading) {
     return <LoadingSpinner />;

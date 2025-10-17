@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-// import { RootState } from '../../store';
 import { setSelectedHobby } from '../../store/slices/uiSlice';
 import { useDrag } from 'react-dnd';
 import { Gift } from 'lucide-react';
@@ -52,8 +51,8 @@ const HobbyItem: React.FC<HobbyItemProps> = ({ hobby, count }) => {
 };
 
 const HobbyList: React.FC = () => {
-  const users:User[] = useSelector((state: any) => state.users.users);
-  const searchTerm = useSelector((state:any ) => state.ui.searchTerm);
+ const users: User[] = useSelector((state: any) => state.users?.users || []);
+   const searchTerm = useSelector((state:any ) => state.ui.searchTerm);
 
   const hobbiesWithCount = useMemo(() => {
     const hobbyCount: Record<string, number> = {};

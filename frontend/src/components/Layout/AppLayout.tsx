@@ -11,9 +11,9 @@ import { ReactFlowProvider } from "reactflow";
 const AppLayout: React.FC = () => {
   const dispatch = useDispatch();
   const sidebarOpen = useSelector((state: any) => state.ui.sidebarOpen);
-        const handleToggleSidebar = useCallback(() => {
-  dispatch(toggleSidebar());
-}, [dispatch]);
+  const handleToggleSidebar = useCallback(() => {
+    dispatch(toggleSidebar());
+  }, [dispatch]);
 
   return (
     <div className="flex h-screen bg-gray-50">
@@ -36,25 +36,24 @@ const AppLayout: React.FC = () => {
       {/* Main Content */}
       <div className="flex-1 flex flex-col min-w-0">
         <header className="bg-white border-b px-4 py-3 flex items-center justify-between">
-
-<button
-  onClick={handleToggleSidebar} 
-  className="p-2 hover:bg-gray-100 rounded"
->
-{sidebarOpen ? <X size={18} /> : <Menu size={18} />}
-</button>
+          <button
+            onClick={handleToggleSidebar}
+            className="p-2 hover:bg-gray-100 rounded"
+          >
+            {sidebarOpen ? <X size={18} /> : <Menu size={18} />}
+          </button>
           <h1 className="text-lg font-semibold">Hobby Network</h1>
           <div className="w-8" />
         </header>
 
         <div className="flex-1 p-2 overflow-auto">
-          <div className="flex-1 grid grid-cols-1 lg:grid-cols-3 gap-6 p-2 overflow-auto">
-            <div className="lg:col-span-2 bg-white rounded-lg border border-gray-200 p-4 h-[600px]">
+          <div className="flex-1 grid grid-cols-1 lg:grid-cols-3 gap-6 p-6 overflow-auto">
+            <div className="lg:col-span-2 bg-white rounded-lg border border-gray-200 p-2 h-[600px]">
               <ReactFlowProvider>
                 <GraphVisualization />
               </ReactFlowProvider>
             </div>
-            <div className="bg-white rounded-lg border p-4">
+            <div className="bg-white rounded-lg border p-2">
               <UserManagement />
             </div>
           </div>

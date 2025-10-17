@@ -5,7 +5,7 @@ import { Search } from 'lucide-react';
 
 const HobbySearch: React.FC = () => {
   const dispatch = useDispatch();
-  const searchTerm = useSelector((state: any) => state.ui.searchTerm);
+  const {searchTerm} = useSelector((state: any) => state.ui);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(setSearchTerm(e.target.value));
