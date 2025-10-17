@@ -7,7 +7,7 @@ interface GraphState {
 }
 
 const initialState: GraphState = {
-  data: { nodes: [], edges: [] },
+    data: { nodes: [], edges: [] },
 };
 
 const graphSlice = createSlice({

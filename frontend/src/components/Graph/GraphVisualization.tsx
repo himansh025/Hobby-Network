@@ -24,10 +24,12 @@ const GraphVisualization: React.FC = () => {
   const dispatch = useDispatch();
 
   const { data } = useSelector((state: any) => state.graph);
+    const { users } = useSelector((state: any) => state.users);
+
   const { connectionSource } = useSelector((state: any) => state.ui);
   const { fitView } = useReactFlow();
   const [laoding, setLoading] = useState(false);
-
+  console.log("asd", data);
   // Memoize node formatting
   const formattedNodes = useMemo(() => {
     if (!data?.nodes?.length) return [];
@@ -59,45 +61,74 @@ const GraphVisualization: React.FC = () => {
     setTimeout(() => fitView(), 100);
   }, [formattedNodes, formattedEdges, setNodes, setEdges, fitView]);
 
-  const createRelationship = 
-    async (id: string, target: string) => {
-      setLoading(true);
-      try {
-        await axiosInstance.post(`/users/${id}/link`, { targetUserId: target });
-        const graphResponse = await axiosInstance.get("/graph");
-        const user= await axiosInstance.get("/users")
-        dispatch(setUsers(user.data.data));
-        dispatch(setGraphData(graphResponse.data.data));
-      } catch (err: any) {
-        const errorMsg =
-          err.response?.data?.error || "Failed to create relationship";
-        toast.error(errorMsg);
-      } finally {
-        setLoading(false);
-      }
-    }
-    
-  const removeRelationship = 
-    async (id: string, targetUserId: string) => {
-      setLoading(true);
-      // console.log(id);
-      try {
-        const response = await axiosInstance.delete(`/users/${id}/unlink`, {
-          data: { targetUserId },
-        });
-        toast.success(response.data.message);
-        const graphResponse = await axiosInstance.get("/graph");
-        const user= await axiosInstance.get("/users")
-        dispatch(setUsers(user.data.data));
-        dispatch(setGraphData(graphResponse.data.data));
+  const createRelationship = async (id: string, target: string) => {
+    setLoading(true);
+    try {
+      const res = await axiosInstance.post(`/users/${id}/link`, {
+        targetUserId: target,
+      });
+      console.log("res of realtion", res.data);
+      const newRelation = {
+        id: res.data.data._id,
+        source: res.data.data.user1,
+        target: res.data.data.user2,
+        type: "smoothstep",
+      };
+      const userRes = await axiosInstance.get("/users");
+      dispatch(setUsers(userRes.data.data));
 
-      } catch (err: any) {
-        const errorMsg =err.response?.data?.error || "Failed to remove relationship";
-        toast.error(errorMsg);
-      } finally {
-        setLoading(false);
-      }
+      dispatch(
+        setGraphData({
+          nodes: data.nodes,
+          edges: [...data.edges, newRelation],
+        })
+      );
+
+      toast.success("Relationship added successfully!");
+    } catch (err: any) {
+      const errorMsg =
+        err.response?.data?.error || "Failed to create relationship";
+      toast.error(errorMsg);
+    } finally {
+      console.log("after added", data);
+      setLoading(false);
     }
+  };
+
+  const removeRelationship = async (id: string, targetUserId: string) => {
+    setLoading(true);
+    // console.log(id);
+    try {
+      const response = await axiosInstance.delete(`/users/${id}/unlink`, {
+        data: { targetUserId },
+      });
+      toast.success(response.data.message);
+      const user = await axiosInstance.get("/users");
+      dispatch(setUsers(user.data.data));
+
+      const updatedEdges = data.edges.filter(
+        (edge: any) =>
+          !(
+            (edge.source === id && edge.target === targetUserId) ||
+            (edge.source === targetUserId && edge.target === id)
+          )
+      );
+
+      dispatch(
+        setGraphData({
+          nodes: data.nodes,
+          edges: updatedEdges,
+        })
+      );
+    } catch (err: any) {
+      const errorMsg =
+        err.response?.data?.error || "Failed to remove relationship";
+      toast.error(errorMsg);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const onEdgeDoubleClick = async (event: React.MouseEvent, edge: Edge) => {
     event.preventDefault();
     event.stopPropagation();
@@ -120,7 +151,56 @@ const GraphVisualization: React.FC = () => {
   const onNodeDoubleClick = async (event: React.MouseEvent, node: any) => {
     dispatch(setConnectionSource(node.id));
   };
+const addHobbyToUser = async (userId: string, hobby: string) => {
+  setLoading(true);
+  try {
+    const user = users.find((u: any) => u._id === userId);
+    if (!user) {
+      toast.error('User not found');
+      return;
+    }
 
+    // Check if hobby already exists
+    if (user.hobbies.includes(hobby)) {
+      toast.error('User already has this hobby');
+      return;
+    }
+
+    // Update user with new hobby
+    const updatedHobbies = [...user.hobbies, hobby];
+    await axiosInstance.put(`/users/${userId}`, {
+      ...user,
+      hobbies: updatedHobbies
+    });
+
+    // Refresh users data
+    const userRes = await axiosInstance.get("/users");
+    dispatch(setUsers(userRes.data.data));
+    const graphdata = await axiosInstance.get("/graph");
+    dispatch(setGraphData(graphdata.data.data));
+  
+    toast.success(`Added "${hobby}" to ${user.username}`);
+  } catch (err: any) {
+    const errorMsg = err.response?.data?.error || "Failed to add hobby";
+    toast.error(errorMsg);
+  } finally {
+    setLoading(false);
+  }
+};
+  
+// Add event listener for hobby drops
+useEffect(() => {
+  const handleHobbyDrop = (event: CustomEvent<{ userId: string; hobby: string }>) => {
+    addHobbyToUser(event.detail.userId, event.detail.hobby);
+  };
+
+  window.addEventListener('hobbyDrop', handleHobbyDrop as EventListener);
+
+  
+  return () => {
+    window.removeEventListener('hobbyDrop', handleHobbyDrop as EventListener);
+  };
+}, [users]);
   const onConnect = async (connection: Connection) => {
     if (connection.source && connection.target) {
       await createRelationship(connection.source, connection.target);

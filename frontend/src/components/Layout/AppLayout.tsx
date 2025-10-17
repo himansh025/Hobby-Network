@@ -48,12 +48,12 @@ const AppLayout: React.FC = () => {
 
         <div className="flex-1 p-2 overflow-auto">
           <div className="flex-1 grid grid-cols-1 lg:grid-cols-3 gap-6 p-6 overflow-auto">
-            <div className="lg:col-span-2 bg-white rounded-lg border border-gray-200 p-2 h-[600px]">
+            <div className="lg:col-span-2 bg-white rounded-lg border border-gray-200 p-2 h-[700px]">
               <ReactFlowProvider>
                 <GraphVisualization />
               </ReactFlowProvider>
             </div>
-            <div className="bg-white rounded-lg border p-2">
+            <div className="bg-white   rounded-lg border p-2">
               <UserManagement />
             </div>
           </div>

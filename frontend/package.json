@@ -22,6 +22,7 @@
     "react-flow": "^1.0.3",
     "react-hot-toast": "^2.6.0",
     "react-redux": "^9.2.0",
+    "react-router-dom": "^7.9.4",
     "reactflow": "^11.11.4"
   },
   "devDependencies": {

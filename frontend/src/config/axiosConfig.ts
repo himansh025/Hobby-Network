@@ -1,9 +1,9 @@
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.API_BASE_URL;
+// const API_BASE_URL = import.meta.env.API_BASE_URL;
 
 export const axiosInstance = axios.create({
-  baseURL: 'https://hobby-network-zjhi.vercel.app/api',
+   baseURL: 'https://hobby-network-zjhi.vercel.app/api',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',

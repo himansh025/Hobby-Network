@@ -49,7 +49,7 @@ const UserList: React.FC<UserListProps> = ({ onEditUser }) => {
   }
 
   return (
-    <div className="divide-y divide-gray-200">
+    <div className="h-[600px] border rounded overflow-y-auto divide-y divide-gray-200">
       {users.map((user) => (
         <UserItem
           key={user._id}

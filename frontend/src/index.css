@@ -1,3 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.react-flow__node:has(div[draggable="true"]) {
+  transition: all 0.2s;
+}
+
+.react-flow__node:hover:has(div[draggable="true"]) {
+  box-shadow: 0 0 0 2px #3b82f6;
+}

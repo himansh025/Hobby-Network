@@ -10,6 +10,7 @@ const UserManagement: React.FC = () => {
 
   const handleEditUser = (user: User) => {
     console.log(user);
+    setUserView(false)
     setSelectedUser(user);
   };
 
