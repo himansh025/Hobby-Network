@@ -1,11 +1,19 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const connectDB = async () => {
   try {
-    const conn = await mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/cybernauts');
-    console.log(`MongoDB Connected: ${conn.connection.host}`);
-  } catch (error) {
-    console.error(`Error: ${error}`);
+    if (!process.env.MONGO_URI) {
+      throw new Error("❌ No Mongo URI found in .env");
+    }
+
+    console.log("Connecting to:", process.env.MONGO_URI);
+    const conn = await mongoose.connect(process.env.MONGO_URI);
+    console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
+  } catch (error:any) {
+    console.error("❌ DB Connection Error:", error.message);
     process.exit(1);
   }
 };

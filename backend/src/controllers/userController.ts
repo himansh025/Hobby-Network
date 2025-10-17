@@ -66,7 +66,6 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
     try {
         const { username, age, hobbies } = req.body;
 
-        // Validation
         if (!username || !age || !hobbies) {
             res.status(400).json({
                 success: false,
@@ -74,8 +73,7 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
             });
             return;
         }
-
-        // Check if username already exists
+        
         const existingUser = await UserModel.findOne({ username });
         if (existingUser) {
             res.status(409).json({
@@ -85,7 +83,6 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
             return;
         }
 
-        // Create user
         const newUser = new UserModel({
             username,
             age,
@@ -214,7 +211,6 @@ export const deleteUser = async (req: Request, res: Response): Promise<void> => 
             return;
         }
 
-        // Check if user has friends
         if (user.friends.length > 0) {
             res.status(409).json({
                 success: false,
@@ -295,10 +291,8 @@ export const createRelationship = async (req: Request, res: Response): Promise<v
             return;
         }
 
-        // Sort IDs to prevent duplicate relationships
         const [sortedId1, sortedId2] = [id, targetUserId].sort();
 
-        // Check if relationship already exists
         const existingRelationship = await RelationshipModel.findOne({
             user1: new mongoose.Types.ObjectId(sortedId1),
             user2: new mongoose.Types.ObjectId(sortedId2)
@@ -348,7 +342,6 @@ export const createRelationship = async (req: Request, res: Response): Promise<v
             });
             return;
         }
-
         res.status(500).json({
             success: false,
             error: 'Failed to create relationship'
@@ -421,7 +414,7 @@ export const removeRelationship = async (req: Request, res: Response): Promise<v
     }
 };
 
-// Helper function to update popularity score
+//  update popularity score
 const updatePopularityScore = async (userId: string): Promise<void> => {
     try {
         const user = await UserModel.findById(userId).populate('friends');
