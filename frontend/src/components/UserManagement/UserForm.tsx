@@ -2,17 +2,19 @@ import React, { useState, useEffect } from "react";
 import type { User, CreateUserRequest } from "../../types/user";
 import { Plus, Save, X } from "lucide-react";
 import { axiosInstance } from "../../config/axiosConfig";
+import { setUsers } from "../../store/slices/usersSlice";
+import { useDispatch } from "react-redux";
+import { setGraphData } from "../../store/slices/graphSlice";
 import toast from "react-hot-toast";
+import LoadingSpinner from "../UI/LoadingSpinner";
 
 interface UserFormProps {
   selectedUser: User | null;
-  onUserUpdate: () => void;
   onCancelEdit: () => void;
 }
 
 const UserForm: React.FC<UserFormProps> = ({
   selectedUser,
-  onUserUpdate,
   onCancelEdit,
 }) => {
   const [formData, setFormData] = useState<CreateUserRequest>({
@@ -20,6 +22,7 @@ const UserForm: React.FC<UserFormProps> = ({
     age: 25,
     hobbies: [],
   });
+  const dispatch=useDispatch();
   const [newHobby, setNewHobby] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
@@ -63,6 +66,12 @@ const UserForm: React.FC<UserFormProps> = ({
       setLoading(true);
       const response = await axiosInstance.post("/users", userData);
       toast.success("User created successfully!");
+      const res= await axiosInstance.get('/users')
+            const graph= await axiosInstance.get('/graph')
+      // console.log(res.data.data);
+      dispatch(setUsers(res.data.data))
+            dispatch(setGraphData(graph.data.data))
+
       return response.data.data;
     } catch (error: any) {
       const errorMsg = error.response?.data?.error || "Failed to create user";
@@ -74,12 +83,15 @@ const UserForm: React.FC<UserFormProps> = ({
   };
 
   const updateUser = async (id: string, userData: CreateUserRequest) => {
-    console.log(id, userData);
+    // console.log(id, userData);
     try {
       setLoading(true);
       const response = await axiosInstance.put(`/users/${id}`, userData);
       toast.success("User updated successfully!");
+      const user = await axiosInstance.get('/users');
+      dispatch(setUsers(user.data.data))
       return response.data.data;
+
     } catch (error: any) {
       const errorMsg = error.response?.data?.error || "Failed to update user";
       toast.error(errorMsg);
@@ -100,8 +112,7 @@ const UserForm: React.FC<UserFormProps> = ({
       } else {
         await createUser(formData);
       }
-      setFormData({ username: "", age: 25, hobbies: [] });
-      onUserUpdate(); // Notify parent to refresh
+      setFormData({ username: "", age: 0, hobbies: [] });
       onCancelEdit(); // Clear selection
     } catch (error:any) {
       toast.error(error.message)
@@ -132,8 +143,11 @@ const UserForm: React.FC<UserFormProps> = ({
     }
   };
 
+if(loading){
+  return <LoadingSpinner/>
+}
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-2">
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">
           Username *
@@ -222,27 +236,28 @@ const UserForm: React.FC<UserFormProps> = ({
         </div>
       </div>
 
-      <div className="flex space-x-2">
-        <button
-          type="submit"
-          disabled={loading}
-          className="btn-primary flex-1 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          <Save size={16} className="mr-2" />
-          {selectedUser ? "Update User" : "Create User"}
-          {loading && "..."}
-        </button>
+    <div className="flex flex-col md:flex-row gap-2">
+  <button
+    type="submit"
+    disabled={loading}
+    className="btn-primary rounded-md flex-1 p-2 bg-blue-950 w-full md:w-auto disabled:opacity-50 disabled:cursor-not-allowed flex text-white items-center justify-center"
+  >
+    <Save size={20} className="mr-1 text-green-400" />
+    {selectedUser ? "Update User" : "Create User"}
+    {loading && "..."}
+  </button>
 
-        {selectedUser && (
-          <button
-            type="button"
-            onClick={onCancelEdit}
-            className="btn-secondary"
-          >
-            Cancel
-          </button>
-        )}
-      </div>
+  {selectedUser && (
+    <button
+      type="button"
+      onClick={onCancelEdit}
+      className="btn-secondary flex-1 p-2 w-full md:w-auto"
+    >
+      Cancel
+    </button>
+  )}
+</div>
+
     </form>
   );
 };

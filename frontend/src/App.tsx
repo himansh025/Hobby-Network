@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import toast, { Toaster } from "react-hot-toast";
@@ -12,47 +12,34 @@ import { useDispatch } from "react-redux";
 
 
 const App: React.FC = () => {
-   const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
 
-  const fetchUsers = async () => {
+  const fetchInitialData = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await axiosInstance.get("/users");
-      console.log(response.data.data);
-      toast.success("all user are duccessfully fetched")
-      dispatch(setUsers(response?.data?.data));
+      const [usersResponse, graphResponse] = await Promise.all([
+        axiosInstance.get("/users"),
+        axiosInstance.get("/graph")
+      ]);
+      
+      dispatch(setUsers(usersResponse?.data?.data));
+      dispatch(setGraphData(graphResponse?.data?.data));
     } catch (error: any) {
-      const errorMsg = error.response?.data?.error || "Failed to fetch users";
+      const errorMsg = error.response?.data?.error || "Failed to fetch data";
       toast.error(errorMsg);
     } finally {
       setLoading(false);
     }
-  };
-
-  const fetchGraphData = async () => {
-    try {
-      setLoading(true);
-      const response = await axiosInstance.get("/graph");
-console.log("GRAPH API response:", response.data);  
-    dispatch(setGraphData(response?.data?.data));
-    } catch (error: any) {
-      const errorMsg = error.response?.data?.error || "Failed to fetch users";
-      toast.error(errorMsg);
-    } finally {
-      setLoading(false);
-    }
-  };
+  }, [dispatch]);
 
   useEffect(() => {
-    fetchUsers();
-    fetchGraphData();
-  }, []);
+    fetchInitialData();
+  }, [fetchInitialData]);
 
   if (loading) {
     return <LoadingSpinner />;
   }
-
   return (    
     <div>
 

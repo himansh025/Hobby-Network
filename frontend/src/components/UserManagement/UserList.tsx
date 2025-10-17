@@ -8,10 +8,9 @@ import UserItem from "./UserItem";
 
 interface UserListProps {
   onEditUser: (user: User) => void;
-  refreshTrigger?: number;
 }
 
-const UserList: React.FC<UserListProps> = ({ onEditUser, refreshTrigger }) => {
+const UserList: React.FC<UserListProps> = ({ onEditUser }) => {
   const [loading, setLoading] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState<string | null>(null);
   const users: User[] = useSelector((state: any) => state.users.users);
