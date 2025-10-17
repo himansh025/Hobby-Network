@@ -6,6 +6,7 @@ import mongoose from 'mongoose';
 import { userRoutes } from './routes/userRoutes';
 import { graphRoutes } from './routes/graph';
 import connectDB from './config/db';
+
 dotenv.config();
 
 const app = express();
@@ -39,7 +40,6 @@ app.use('*', (req, res) => {
     error: 'Route not found' 
   });
 });
-
 
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT} `);
