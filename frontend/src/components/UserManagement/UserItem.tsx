@@ -24,7 +24,7 @@ const UserItem: React.FC<UserItemProps> = ({ user, onEdit, onDelete, loading }) 
   };
 
   return (
-    <div className="p-4 border-b border-gray-200 last:border-b-0 hover:bg-gray-50 transition-colors">
+    <div className="p-4 border-b border-gray-200 overflow-y-auto last:border-b-0 hover:bg-gray-50 transition-colors">
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center">
           <h3 className="font-semibold text-gray-800">{user.username}</h3>

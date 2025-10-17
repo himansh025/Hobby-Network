@@ -16,6 +16,7 @@ import CustomNode from "./CustomNode";
 import axiosInstance from "../../config/axiosConfig";
 import toast from "react-hot-toast";
 import LoadingSpinner from "../UI/LoadingSpinner";
+import { setUsers } from "../../store/slices/usersSlice";
 
 const nodeTypes = { custom: CustomNode };
 
@@ -58,12 +59,14 @@ const GraphVisualization: React.FC = () => {
     setTimeout(() => fitView(), 100);
   }, [formattedNodes, formattedEdges, setNodes, setEdges, fitView]);
 
-  const createRelationship = useCallback(
+  const createRelationship = 
     async (id: string, target: string) => {
       setLoading(true);
       try {
         await axiosInstance.post(`/users/${id}/link`, { targetUserId: target });
         const graphResponse = await axiosInstance.get("/graph");
+        const user= await axiosInstance.get("/users")
+        dispatch(setUsers(user.data.data));
         dispatch(setGraphData(graphResponse.data.data));
       } catch (err: any) {
         const errorMsg =
@@ -72,11 +75,9 @@ const GraphVisualization: React.FC = () => {
       } finally {
         setLoading(false);
       }
-    },
-    [dispatch]
-  );
-
-  const removeRelationship = useCallback(
+    }
+    
+  const removeRelationship = 
     async (id: string, targetUserId: string) => {
       setLoading(true);
       // console.log(id);
@@ -85,21 +86,18 @@ const GraphVisualization: React.FC = () => {
           data: { targetUserId },
         });
         toast.success(response.data.message);
-        toast.success(response.data.message);
-        // Refresh graph data
         const graphResponse = await axiosInstance.get("/graph");
+        const user= await axiosInstance.get("/users")
+        dispatch(setUsers(user.data.data));
         dispatch(setGraphData(graphResponse.data.data));
+
       } catch (err: any) {
-        const errorMsg =
-          err.response?.data?.error || "Failed to remove relationship";
+        const errorMsg =err.response?.data?.error || "Failed to remove relationship";
         toast.error(errorMsg);
       } finally {
         setLoading(false);
       }
-    },
-    [dispatch]
-  );
-
+    }
   const onEdgeDoubleClick = async (event: React.MouseEvent, edge: Edge) => {
     event.preventDefault();
     event.stopPropagation();

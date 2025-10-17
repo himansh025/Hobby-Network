@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import UserForm from './UserForm';
 import UserList from './UserList';
 import type { User } from '../../types/user';
-import { Users, UserPlus, Edit3, Sparkles } from 'lucide-react';
+import { Users, UserPlus, Edit3, Sparkles, Cross } from 'lucide-react';
 
 const UserManagement: React.FC = () => {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [userView, setUserView] = useState(false);
 
   const handleEditUser = (user: User) => {
     console.log(user);
@@ -16,6 +17,40 @@ const UserManagement: React.FC = () => {
     setSelectedUser(null);
   };
 
+  const handleViewUsers=()=>{
+    setUserView(!userView)
+  }
+
+  if(userView){
+return(
+       <div className="flex-1 px-2 pb-6">
+        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 h-full overflow-hidden transition-all duration-300 hover:shadow-xl">
+          <div className="bg-gradient-to-r from-gray-50 to-purple-50/50 px-6 py-2 border-b border-gray-100">
+            <div className="flex items-center justify-between relative">
+              <div className="flex items-center space-x-3 ">
+                <div className="p-2 bg-purple-100 text-purple-600 rounded-lg ">
+                  <Users size={16} />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-gray-800">All Users</h3>
+                  <p className="text-sm text-gray-600">Manage your user network</p>
+              
+                </div>
+                    <button title='x' onClick={()=>setUserView(!userView)} className='absolute top-1 right-0'>
+                    <Cross className='rotate-45 font-light text-red-600  '/>
+                  </button>
+              </div>
+              <div className="bg-white px-3 py-1 rounded-full border border-gray-200 shadow-sm">
+              </div>
+            </div>
+          </div>
+          <div className="h-[calc(100%-80px)] overflow-y-auto">
+            <UserList onEditUser={handleEditUser} />
+          </div>
+        </div>
+      </div> 
+)
+  }
   return (
     <div className="h-full flex flex-col bg-gradient-to-br from-gray-50 to-blue-50/30">
       {/* Header with gradient and better styling */}
@@ -65,30 +100,12 @@ const UserManagement: React.FC = () => {
           </div>
         </div>
       </div>
-
-      {/* User List with enhanced styling */}
-      <div className="flex-1 px-2 pb-6">
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 h-full overflow-hidden transition-all duration-300 hover:shadow-xl">
-          <div className="bg-gradient-to-r from-gray-50 to-purple-50/50 px-6 py-2 border-b border-gray-100">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <div className="p-2 bg-purple-100 text-purple-600 rounded-lg">
-                  <Users size={16} />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-gray-800">All Users</h3>
-                  <p className="text-sm text-gray-600">Manage your user network</p>
-                </div>
-              </div>
-              <div className="bg-white px-3 py-1 rounded-full border border-gray-200 shadow-sm">
-              </div>
-            </div>
-          </div>
-          <div className="h-[calc(100%-80px)] overflow-y-auto">
-            <UserList onEditUser={handleEditUser} />
-          </div>
-        </div>
-      </div>
+ <div className="flex-1 px-2 flex justify-center items-center pb-6"> 
+  <button onClick={handleViewUsers}>
+<h2 className='text-gray-800 text-xl bg-green-400 px-10 py-2 rounded-md'>View Users
+  </h2>  
+  </button>
+  </div>
     </div>
   );
 };
