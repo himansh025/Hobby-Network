@@ -350,51 +350,66 @@ export const createRelationship = async (req: Request, res: Response): Promise<v
 };
 
 // Remove relationship
-
 export const removeRelationship = async (req: Request, res: Response): Promise<void> => {
-  try {
-    const { id } = req.params;
-    const { targetUserId } = req.body;
-console.log(id);
+    try {
+        let { id } = req.params;
+        const { targetUserId } = req.body;
+        console.log(id,targetUserId);
 
-   if (!id) {
-      res.status(400).json({ success: false, error: 'id is required' });
-      return;
+        if(id==null){
+        res.status(400).json({
+                success: false,
+                error: 'id not null'
+            });
+            return;
+        }
+        if (!mongoose.Types.ObjectId.isValid(id) || !mongoose.Types.ObjectId.isValid(targetUserId)) {
+            res.status(400).json({
+                success: false,
+                error: 'Invalid user ID format'
+            });
+            return;
+        }
+        // Sort IDs to find the relationship
+        const [sortedId1, sortedId2] = [id, targetUserId].sort();
+        // Remove relationship
+        const relationship = await RelationshipModel.findOneAndDelete({
+            user1: new mongoose.Types.ObjectId(sortedId1),
+            user2: new mongoose.Types.ObjectId(sortedId2)
+        });
+
+        if (!relationship) {
+            res.status(404).json({
+                success: false,
+                error: 'Relationship not found'
+            });
+            return;
+        }
+
+        // Update friends arrays
+        await UserModel.findByIdAndUpdate(id, {
+            $pull: { friends: targetUserId }
+        });
+
+        await UserModel.findByIdAndUpdate(targetUserId, {
+            $pull: { friends: id }
+        });
+
+        // Update popularity scores
+        await updatePopularityScore(id);
+        await updatePopularityScore(targetUserId);
+
+        res.status(200).json({
+            success: true,
+            message: 'Relationship removed successfully'
+        });
+    } catch (error) {
+        console.error('Remove relationship error:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to remove relationship'
+        });
     }
-
-    if (!targetUserId) {
-      res.status(400).json({ success: false, error: 'targetUserId is required' });
-      return;
-    }
-
-    // ✅ Validate both IDs
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      res.status(400).json({ success: false, error: 'Invalid user ID format' });
-      return;
-    }
-
-    if (!mongoose.Types.ObjectId.isValid(targetUserId)) {
-      res.status(400).json({ success: false, error: 'Invalid targetUserId format' });
-      return;
-    }
-
-    // Now safe to query MongoDB
-    // Example: remove relationship
-    const user = await UserModel.findById(id);
-    const targetUser = await UserModel.findById(targetUserId);
-
-    if (!user || !targetUser) {
-      res.status(404).json({ success: false, error: 'User not found' });
-      return;
-    }
-
-    // ... your logic to remove relationship
-
-    res.json({ success: true, message: 'Relationship removed' });
-
-  } catch (error) {
-    res.status(500).json({ success: false, error: 'Server error' });
-  }
 };
 
 //  update popularity score
