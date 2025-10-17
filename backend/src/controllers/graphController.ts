@@ -2,7 +2,6 @@ import { Request, Response } from 'express';
 import { UserModel } from '../models/UserModel';
 import { RelationshipModel } from '../models/Relationship';
 
-// TypeScript: Graph data controller
 export const getGraphData = async (req: Request, res: Response): Promise<void> => {
   try {
     // Get all users
@@ -20,7 +19,7 @@ export const getGraphData = async (req: Request, res: Response): Promise<void> =
         popularityScore: user.popularityScore
       },
       position: {
-        x: Math.random() * 800, // Random position for visualization
+        x: Math.random() * 800, 
         y: Math.random() * 600
       }
     }));

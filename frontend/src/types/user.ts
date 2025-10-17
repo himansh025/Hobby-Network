@@ -14,11 +14,7 @@ export interface CreateUserRequest {
   hobbies: string[];
 }
 
-export interface UpdateUserRequest {
-  username?: string;
-  age?: number;
-  hobbies?: string[];
-}
+
 
 export interface GraphNode {
   id: string;
@@ -37,10 +33,4 @@ export interface GraphEdge {
 export interface GraphData {
   nodes: GraphNode[];
   edges: GraphEdge[];
-}
-
-export interface ApiResponse<T> {
-  success: boolean;
-  data?: T;
-  error?: string;
 }

@@ -23,7 +23,8 @@
     "noUncheckedIndexedAccess": true,
     "noImplicitOverride": true,
     "allowUnusedLabels": false,
-    "allowUnreachableCode": false
+    "allowUnreachableCode": false,
+      "types": ["node", "jest"] 
   },
   "include": [
     "src/**/*",
