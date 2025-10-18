@@ -18,23 +18,23 @@ A modern, interactive social network visualization platform where users can crea
 ---
 
 ## 📸 Screenshots
-
+<div align="flex">
 <p align="center">
-  <img src="/frontend/assets/images/image1.png" alt="Dashboard" width="100%"/>
+  <img src="/frontend/assets/images/image1.png" alt="Dashboard" width="70%" height="500px"/>
   <br/>
   <em>Dashboard Overview</em>
 </p>
 
 <p align="center">
-  <img src="/frontend/assets/images/image.png" alt="graph Management" width="100%"/> 
+  <img src="/frontend/assets/images/image.png" alt="graph Management" width="70%" height="500px"/> 
   <br/>
   <em>Interactive Network Graph</em>
 </p>
-
+</div>
 <p align="center">
-  <img src="/frontend/assets/images/image2.png" alt="User Management" width="100%"/>
-   <img src="/frontend/assets/images/image3.png" alt="User Management" width="100%"/>
-      <img src="/frontend/assets/images/image4.png" alt="User Management" width="100%"/>
+   <img src="/frontend/assets/images/image3.png" alt="User Management" width="33%" height="500px"/>
+  <img src="/frontend/assets/images/image2.png" alt="User Management" width="33%" height="500px"/>
+      <img src="/frontend/assets/images/image4.png" alt="User Management" width="33%" height="500px"/>
   <br/>
   <em>User Management Interface</em>
 </p>
