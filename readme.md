@@ -20,19 +20,21 @@ A modern, interactive social network visualization platform where users can crea
 ## 📸 Screenshots
 
 <p align="center">
-  <img src="https://via.placeholder.com/800x400/4F46E5/FFFFFF?text=HobbyMatch+Dashboard" alt="Dashboard" width="100%"/>
+  <img src="/frontend/assets/images/image1.png" alt="Dashboard" width="100%"/>
   <br/>
   <em>Dashboard Overview</em>
 </p>
 
 <p align="center">
-  <img src="https://via.placeholder.com/800x400/7C3AED/FFFFFF?text=Interactive+Graph" alt="Interactive Graph" width="100%"/>
+  <img src="/frontend/assets/images/image.png" alt="graph Management" width="100%"/> 
   <br/>
   <em>Interactive Network Graph</em>
 </p>
 
 <p align="center">
-  <img src="https://via.placeholder.com/800x400/059669/FFFFFF?text=User+Management" alt="User Management" width="100%"/>
+  <img src="/frontend/assets/images/image2.png" alt="User Management" width="100%"/>
+   <img src="/frontend/assets/images/image3.png" alt="User Management" width="100%"/>
+      <img src="/frontend/assets/images/image4.png" alt="User Management" width="100%"/>
   <br/>
   <em>User Management Interface</em>
 </p>
@@ -58,7 +60,7 @@ A modern, interactive social network visualization platform where users can crea
 ### ⚡ Advanced Features
 
 - **Real-time Updates:** Instant graph updates on user interactions
-- **Search & Filter:** Find users and hobbies quickly
+- **Search & Filter:** Find hobbies quickly
 - **Connection Management:** Easy friend connection/disconnection
 - **Beautiful UI:** Modern design with smooth animations
 
@@ -73,20 +75,11 @@ A modern, interactive social network visualization platform where users can crea
 - **React Flow** - Graph visualization
 - **React DnD** - Drag and drop functionality
 - **Tailwind CSS** - Utility-first styling
-- **Lucide React** - Beautiful icons
 
 ### Backend
 - **Node.js** - Runtime environment
 - **Express.js** - Web framework
 - **MongoDB** - Database
-- **Mongoose** - ODM library
-- **JWT** - Authentication
-
-### Development Tools
-- **Vite** - Fast build tool
-- **Axios** - HTTP client
-- **React Hot Toast** - Notifications
-- **ESLint & Prettier** - Code quality
 
 ---
 
@@ -98,35 +91,28 @@ hobbymatch/
 │   ├── components/
 │   │   ├── Graph/
 │   │   │   ├── GraphVisualization.tsx
-│   │   │   ├── CustomNode.tsx
-│   │   │   └── index.ts
+│   │   │   └── CustomNode.tsx
 │   │   ├── UserManagement/
 │   │   │   ├── UserManagement.tsx
-│   │   │   ├── UserForm.tsx
+│   │   │   ├── UpdateUser.tsx
 │   │   │   ├── UserList.tsx
-│   │   │   ├── UserItem.tsx
-│   │   │   └── index.ts
+│   │   │   ├── UserListItem.tsx
+│   │   │   └── CreateUser.tsx
 │   │   ├── Sidebar/
 │   │   │   ├── HobbyList.tsx
 │   │   │   ├── HobbySearch.tsx
 │   │   │   └── HobbyItem.tsx
-│   │   ├── Layout/
-│   │   │   ├── AppLayout.tsx
-│   │   │   └── index.ts
 │   │   └── UI/
 │   │       ├── LoadingSpinner.tsx
-│   │       ├── ErrorBoundary.tsx
-│   │       └── index.ts
+│   │       └── ErrorBoundary.tsx
 │   ├── store/
 │   │   ├── slices/
 │   │   │   ├── usersSlice.ts
 │   │   │   ├── graphSlice.ts
 │   │   │   └── uiSlice.ts
-│   │   ├── selectors.ts
-│   │   └── index.ts
+│   │   └── store.ts
 │   ├── types/
-│   │   ├── user.ts
-│   │   └── index.ts
+│   │   └── user.ts
 │   ├── config/
 │   │   └── axiosConfig.ts
 │   ├── App.tsx
@@ -187,7 +173,7 @@ hobbymatch/
 |--------|----------|-------------|
 | GET | `/graph` | Get graph data |
 
-**Full API Documentation:** [View Postman Collection](https://documenter.getpostman.com/view/your-collection-id)
+**Full API Documentation:** [View Postman Collection]()
 
 ---
 
@@ -204,8 +190,8 @@ hobbymatch/
 1. **Clone the repository**
 
 ```bash
-git clone https://github.com/yourusername/hobbymatch.git
-cd hobbymatch
+git clone https://github.com/yourusername/hobby-network.git
+cd hobby-network
 ```
 
 2. **Install dependencies**
@@ -225,18 +211,17 @@ Configure your environment variables:
 
 ```env
 VITE_API_BASE_URL=http://localhost:3000/api
-MONGODB_URI=mongodb://localhost:27017/hobbymatch
-JWT_SECRET=your_jwt_secret
+MONGODB_URI=mongodb://localhost:27017/hobby-network
 ```
 
 4. **Start development servers**
 
 ```bash
-# Frontend (Vite)
+# Frontend 
 npm run dev
 
-# Backend (if separate)
-npm run server
+# Backend 
+npm run dev
 ```
 
 5. **Open application**
@@ -265,6 +250,8 @@ Navigate to `http://localhost:5173` in your browser.
 1. Use sidebar to browse all hobbies
 2. Search for specific interests
 3. Click hobbies to filter users
+4. Drag and Drop feature 
+5. Drag Any Hobbies to the user graph make make the friendship
 
 ### Mobile Usage
 
@@ -290,81 +277,17 @@ PORT=3000
 # Optional
 NODE_ENV=development
 ```
-
----
-
-## 🧪 Testing
-
-```bash
-# Run tests
-npm test
-
-# Run tests with coverage
-npm run test:coverage
-
-# Run e2e tests
-npm run test:e2e
-```
-
----
-
-## 🚢 Deployment
-
-### Frontend (Vercel/Netlify)
-
-```bash
-npm run build
-```
-
-Deploy the `dist` folder to your hosting service.
-
-### Backend (Railway/Render)
-
-Ensure your environment variables are set in your hosting platform.
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome! Please follow these steps:
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
 ---
 
 ## 👥 Authors
 
-- **Your Name** - *Initial work* - [GitHub Profile](https://github.com/yourusername)
-
----
-
-## 🙏 Acknowledgments
-
-- React Flow for the amazing graph visualization library
-- The open-source community for inspiration
-- All contributors who help improve this project
-
+- **Himanshu** - *Initial work* - [GitHub Profile](https://github.com/himansh025)
 ---
 
 ## 📧 Contact
 
 For questions or support, please reach out:
 
-- **Email:** your.email@example.com
-- **GitHub Issues:** [Create an issue](https://github.com/yourusername/hobbymatch/issues)
-- **Twitter:** [@yourusername](https://twitter.com/yourusername)
+- **Email:** himanshudeolia0825@gmail.com
 
 ---
-
-<p align="center">Made with ❤️ by the HobbyMatch Team</p>
-<p align="center">⭐ Star this repository if you find it helpful!</p>
